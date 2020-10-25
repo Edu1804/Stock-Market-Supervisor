@@ -3,12 +3,14 @@ import java.util.HashSet;
 
 public class BDD {
     private static Connection myConn;
-    public static void inicializarConexion(){
 
+    //Function that provides the connection with our Database in MySQL
+    //Sometimes, there is an error related with the 'Time Zone'
+    //Just execute this query in mysql: SET GLOBAL time_zone = '+1:00'; (for Spain)
+    public static void inicializarConexion(){
         String dbUrl = "jdbc:mysql://localhost:3306/stock?useSSL=false";
         String user = "stockuser";
         String pass = "stockuser";
-
         try{
             //Comunicación con la base de datos
             myConn=DriverManager.getConnection( dbUrl, user, pass);
@@ -19,9 +21,38 @@ public class BDD {
         }
     }
 
+        /*
+    Queries for MySQL in order to create the table
+use stock;
+drop table if exists empresas;
+CREATE TABLE empresas (
+    Ticker varchar(15) NOT NULL,
+    Nombre varchar(64) DEFAULT NULL,
+    Sector varchar(64) DEFAULT NULL,
+    Subsector varchar(64) DEFAULT NULL,
+    `Payout/FCF(%)`float(4,2) DEFAULT NULL,
+    `EV/FCF` float(4,2) DEFAULT NULL,
+    `EV/EBITDA` float(4,2) DEFAULT NULL,
+    PER float(4,2) DEFAULT NULL,
+    `P/B` float(6,3) DEFAULT NULL,
+    `P/S` float(6,3) DEFAULT NULL,
+    Puntuacion int(3) DEFAULT NULL,
+    Numero_Acciones float(9,2) DEFAULT NULL,
+    Dinero_Efectivo int(9) DEFAULT NULL,
+    Deuda int(9) DEFAULT NULL,
+    Flujo_Caja_Libre int(9) DEFAULT NULL,
+    EBITDA int(9) DEFAULT NULL,
+    PRIMARY KEY (Ticker)
+    )
+
+
+    SELECT Ticker, Nombre, Sector, Subsector, `Payout/FCF(%)`, `EV/FCF`, `EV/EBITDA`, Puntuacion FROM stock.empresas;
+SELECT Ticker, Nombre, Sector, Subsector, `Payout/FCF(%)`, `EV/FCF`, `EV/EBITDA`, PER, `P/B`, `P/S` Puntuacion FROM stock.empresas;
+     */
+
+    //This function add a stock into the BDD
     public static void aniadirNuevaEmpresa(Empresa e){
         try {
-
             Statement myStmt = myConn.createStatement();
             if (comprobarEmpresa(e)) {
                 System.out.println("Esta empresa ya se ha añadido a la base de datos\n");
@@ -51,6 +82,7 @@ public class BDD {
         }
     }
 
+    //Auxiliary function for the function 'aniadirNuevaEmpresa' that checks if a stock already exists in the BDD
     public static boolean comprobarEmpresa(Empresa e){
         boolean encontrado=false;
         try {
@@ -59,7 +91,7 @@ public class BDD {
             Statement myStmt = myConn.createStatement();
             ResultSet myRs = null;
             myRs = myStmt.executeQuery("SELECT * FROM empresas WHERE `Ticker`='"+e.getTicker()+"'");
-            if(!myRs.next()){ //No existe esa empresa en la BBD
+            if(!myRs.next()){ //The stock doesn't exist in the BDD
                 encontrado=false;
             }else{
                 encontrado=true;
@@ -71,6 +103,8 @@ public class BDD {
         return encontrado;
     }
 
+    //A function that deletes a stock from the BDD
+    //You need to give it the ticker in order to find it in the BDD
     public static void eliminarEmpresa(String ticker){
         try{
             Statement myStmt = myConn.createStatement();
@@ -81,6 +115,7 @@ public class BDD {
         }
     }
 
+    //It shows the BDD in the console of IntelliJ
     public static void mostrarBDD(){
         try{
             Statement myStmt = myConn.createStatement();
@@ -106,6 +141,7 @@ public class BDD {
         }
     }
 
+    //It returns the number of stocks that we've got in our BDD
     public static int listaEmpresas(){
         int num=0;
         try{
@@ -121,6 +157,8 @@ public class BDD {
         return num;
     }
 
+    //It updates the data of our 'Set' in Java
+    //The update is made with the BDD data
     public static void actualizarDatosSet(HashSet<Empresa> lista){
         try{
             Statement myStmt = myConn.createStatement();
@@ -153,52 +191,18 @@ public class BDD {
         }
     }
 
-    public static void actualizarEmpresa(Empresa e){
-        try{
+    //It updates a stock based in the price(that is always changing)
+    public static void actualizarEmpresa(Empresa e) {
+        try {
             Statement myStmt = myConn.createStatement();
-            String sql = "UPDATE empresas SET `EV/FCF` = '"+e.getEv_fcf()+"' WHERE `Ticker`='"+e.getTicker()+"'";
-            String sql2 = "UPDATE empresas SET `EV/EBITDA` = '"+e.getEv_ebitda()+"' WHERE `Ticker`='"+e.getTicker()+"'";
-            String sql3 = "UPDATE empresas SET `Puntuacion` = '"+e.getCalificacion()+"' WHERE `Ticker`='"+e.getTicker()+"'";
-            int rowsAffected=myStmt.executeUpdate(sql);
-            int rowsAffected2=myStmt.executeUpdate(sql2);
-            int rowsAffected3=myStmt.executeUpdate(sql3);
-        }catch(Exception exc){
+            String sql = "UPDATE empresas SET `EV/FCF` = '" + e.getEv_fcf() + "' WHERE `Ticker`='" + e.getTicker() + "'";
+            String sql2 = "UPDATE empresas SET `EV/EBITDA` = '" + e.getEv_ebitda() + "' WHERE `Ticker`='" + e.getTicker() + "'";
+            String sql3 = "UPDATE empresas SET `Puntuacion` = '" + e.getCalificacion() + "' WHERE `Ticker`='" + e.getTicker() + "'";
+            int rowsAffected = myStmt.executeUpdate(sql);
+            int rowsAffected2 = myStmt.executeUpdate(sql2);
+            int rowsAffected3 = myStmt.executeUpdate(sql3);
+        } catch (Exception exc) {
             exc.printStackTrace();
         }
     }
-
-    /*
-    Codigo BDD para MySQL
-use stock;
-drop table if exists empresas;
-CREATE TABLE empresas (
-    Ticker varchar(15) NOT NULL,
-    Nombre varchar(64) DEFAULT NULL,
-    Sector varchar(64) DEFAULT NULL,
-    Subsector varchar(64) DEFAULT NULL,
-    `Payout/FCF(%)`float(4,2) DEFAULT NULL,
-    `EV/FCF` float(4,2) DEFAULT NULL,
-    `EV/EBITDA` float(4,2) DEFAULT NULL,
-    PER float(4,2) DEFAULT NULL,
-    `P/B` float(6,3) DEFAULT NULL,
-    `P/S` float(6,3) DEFAULT NULL,
-    Puntuacion int(3) DEFAULT NULL,
-    Numero_Acciones float(9,2) DEFAULT NULL,
-    Dinero_Efectivo int(9) DEFAULT NULL,
-    Deuda int(9) DEFAULT NULL,
-    Flujo_Caja_Libre int(9) DEFAULT NULL,
-    EBITDA int(9) DEFAULT NULL,
-    PRIMARY KEY (Ticker)
-    )
-
-
-    SELECT Ticker, Nombre, Sector, Subsector, `Payout/FCF(%)`, `EV/FCF`, `EV/EBITDA`, Puntuacion FROM stock.empresas;
-SELECT Ticker, Nombre, Sector, Subsector, `Payout/FCF(%)`, `EV/FCF`, `EV/EBITDA`, PER, `P/B`, `P/S` Puntuacion FROM stock.empresas;
-     */
-
-
-
-
-
-
 }
