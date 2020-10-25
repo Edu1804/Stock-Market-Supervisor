@@ -5,34 +5,42 @@ import java.util.Scanner;
 
 public class Empresa {
 
+    //Main attributes that are not expected to change during the execution of the code
     private String nombre;
     private String sector;
     private String subsector;
     private String ticker;
 
+    //Attributes for the basic analysis
     private float payout_fcf;
     private float ev_fcf;
     private float ev_ebitda;
 
+    //Atrributes for the advanced analysis
     private float p_b;
     private float p_s;
     private float per;
 
+    //Atrribute for the calification based in others (atrributes)
     private float calificacion;
 
+    //Atrribute necessary to storage the price (it changes during the code execution many times)
     private BigDecimal cotizacion;
 
+    //Other atrributes that have been created in order to support the others
     private float acciones;
     private float cash;
     private float deuda;
     private float fcf;
     private float ebitda;
 
+    //Arrays for the atrributes 'Sector' & 'Subsector'
     static String[] sectores=new String[]{"Defensivo","Sensitivo","Ciclico"};
     static String[] subsectores1=new String[]{"Consumo Defensivo","Salud","Utilities"};
     static String[] subsectores2=new String[]{"Industrial","Servicios de Telecomunicacion","Tecnologia","Energia"};
     static String[] subsectores3=new String[]{"Consumo Ciclico","Servicios Financieros","Real Estate","Materiales Basicos"};
 
+    //Empty basic constructor
     public Empresa(){
         this.nombre="";
         this.sector="";
@@ -40,11 +48,13 @@ public class Empresa {
         this.ticker="";
     }
 
+    //constructor for the Ticker
     public Empresa(String ticker){
         this();
         this.ticker=ticker;
     }
 
+    //Full constructor
     public Empresa(String ticker, String nombre, String sector, String subsector, float payout_fcf, float ev_fcf, float ev_ebitda, float p_b, float p_s, float per, float puntuacion, float acciones, float cash, float deuda, float fcf, float ebitda) {
         this.nombre = nombre;
         this.sector = sector;
@@ -64,6 +74,101 @@ public class Empresa {
         this.ebitda=ebitda;
     }
 
+    //Equals method
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Empresa empresa = (Empresa) o;
+        return ticker.equals(empresa.ticker);
+    }
+
+    //Many getters and setters that are used in many classes
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getSector() {
+        return sector;
+    }
+
+    public String getSubsector() {
+        return subsector;
+    }
+
+    public float getCalificacion() {
+        return calificacion;
+    }
+
+    public String getTicker() {
+        return ticker;
+    }
+
+    public float getPayout_fcf() {
+        return payout_fcf;
+    }
+
+    public float getEv_fcf() {
+        return ev_fcf;
+    }
+
+    public float getEv_ebitda() {
+        return ev_ebitda;
+    }
+
+    public float getP_b() {
+        return p_b;
+    }
+
+    public float getP_s() {
+        return p_s;
+    }
+
+    public float getPer() {
+        return per;
+    }
+
+    public float getAcciones() {
+        return acciones;
+    }
+
+    public float getCash() {
+        return cash;
+    }
+
+    public float getDeuda() {
+        return deuda;
+    }
+
+    public float getFcf() { return fcf; }
+
+    public float getEbitda() {
+        return ebitda;
+    }
+
+    //String toString method
+    @Override
+    public String toString(){
+        return "Empresa: "+nombre+
+                "\n     Sector: "+sector+
+                "\n     Subsector: "+subsector+
+                "\n     Ticker: "+ticker+
+                "\n     PayOut/FCF: "+payout_fcf+"%"+
+                "\n     EV/FCF: "+ev_fcf+
+                "\n     EV/EBITDA: "+ev_ebitda+
+                "\n     PER: "+per+
+                "\n     P/B: "+p_b+
+                "\n     P/S: "+p_s+
+                "\n     Puntuación: "+calificacion;
+    }
+
+    //Basic method of hashCode
+    @Override
+    public int hashCode() {
+        return Objects.hash(ticker);
+    }
+
+    //Main function that introduce all the parameters of a stock
     public void introducirParametros(){
         Scanner entrada = new Scanner(System.in);
         System.out.println("Digite las caracteristicas de la empresa:");
@@ -115,22 +220,7 @@ public class Empresa {
         this.ev_ebitda=EV_EBITDA(enterprise, ebitda);
     }
 
-    public void actualizarDatos(){
-
-        this.cotizacion=Finance.encontrarPrecioApi(ticker);
-
-        float capital=calculo_capitalizacion(cotizacion, acciones);
-        float enterprise=enterprise_value(capital, cash, deuda);
-        this.ev_fcf=EV_FCF(enterprise, fcf);
-        this.ev_ebitda=EV_EBITDA(enterprise, ebitda);
-        if(this.per==0){
-            this.aniadirPuntuacion();
-        }else{
-            this.aniadirPuntuacionAvanzada();
-        }
-
-    }
-
+    //Function necessary if you are doing an advanced analysis
     public void introducirParametrosAvanzados(){
         Scanner entrada = new Scanner(System.in);
         System.out.println("Introduzca el beneficio neto(net income): ");
@@ -147,242 +237,7 @@ public class Empresa {
         this.p_s=P_S(cotizacion, acciones, net_revenues);
     }
 
-
-
-    private static void mensajeDividendo(){
-        System.out.println("¿Es es dividendo trimestral, semestral o anual?");
-        System.out.println("Indique el tipo de dividendo que es:");
-        System.out.println("1.Dividendo trimestral");
-        System.out.println("2.Dividendo semestral");
-        System.out.println("3.Dividendo anual");
-    }
-
-    private static int tipoDividendo(){
-        mensajeDividendo();
-        Scanner entrada = new Scanner(System.in);
-        int opcion = entrada.nextInt();
-        entrada.nextLine();
-        return opcion;
-    }
-
-    public float getAcciones() {
-        return acciones;
-    }
-
-    public float getCash() {
-        return cash;
-    }
-
-    public float getDeuda() {
-        return deuda;
-    }
-
-    public float getFcf() {
-        return fcf;
-    }
-
-    public float getEbitda() {
-        return ebitda;
-    }
-
-    private static float calculo_dividendo(int opcion, float dividendo){
-        if(opcion==1){
-            dividendo*=4;
-        }
-        else if(opcion==2){
-            dividendo*=2;
-        }
-        return dividendo;
-    }
-
-    private static float calculo_payout(float num_acciones, float dividendo){
-        return num_acciones*dividendo;
-    }
-
-    private static float calculo_capitalizacion(BigDecimal cotizacion, float acciones){
-        //BigDecimal cotizacion = new BigDecimal(2.36359);
-        float rounded = cotizacion.setScale(2, RoundingMode.DOWN).floatValue();
-        return rounded*acciones;
-    }
-
-    private static float deuda_neta(float deudalargo, float deudacorto){
-        return deudacorto + deudalargo;
-    }
-
-    private static float enterprise_value(float calculo_capitalizacion, float cash, float deuda_neta){
-        return calculo_capitalizacion+deuda_neta-cash;
-    }
-
-    private static float Payout_FCF(float payout, float fcf){
-        return (payout/fcf)*100;
-    }
-
-    public String toString(){
-        return "Empresa: "+nombre+
-                "\n     Sector: "+sector+
-                "\n     Subsector: "+subsector+
-                "\n     Ticker: "+ticker+
-                "\n     PayOut/FCF: "+payout_fcf+"%"+
-                "\n     EV/FCF: "+ev_fcf+
-                "\n     EV/EBITDA: "+ev_ebitda+
-                "\n     PER: "+per+
-                "\n     P/B: "+p_b+
-                "\n     P/S: "+p_s+
-                "\n     Puntuación: "+calificacion;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Empresa empresa = (Empresa) o;
-        return ticker.equals(empresa.ticker);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(ticker);
-    }
-
-    private static float EV_FCF(float enterprise_value, float fcf){
-        return enterprise_value/fcf;
-    }
-
-    private static float EV_EBITDA(float ev, float ebitda){
-        return ev/ebitda;
-    }
-
-    private static float EBITDA(float income, float deprecia, float amort){
-        return income+deprecia+amort;
-    }
-
-    private static float PER(BigDecimal cotizacion, float acciones, float ben_neto){
-        float rounded = cotizacion.setScale(2, RoundingMode.DOWN).floatValue();
-        return rounded/(ben_neto/acciones);
-    }
-
-    private static float P_B(BigDecimal cotizacion, float acciones, float equity){
-        float rounded = cotizacion.setScale(2, RoundingMode.DOWN).floatValue();
-        return rounded/(equity/acciones);
-    }
-
-    private static float P_S(BigDecimal cotizacion, float acciones, float net_revenues){
-        float rounded = cotizacion.setScale(2, RoundingMode.DOWN).floatValue();
-        return rounded/(net_revenues/acciones);
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public String getSector() {
-        return sector;
-    }
-
-    public String getSubsector() {
-        return subsector;
-    }
-
-    public float getCalificacion() {
-        return calificacion;
-    }
-
-    public String getTicker() {
-        return ticker;
-    }
-
-    public float getPayout_fcf() {
-        return payout_fcf;
-    }
-
-    public float getEv_fcf() {
-        return ev_fcf;
-    }
-
-    public float getEv_ebitda() {
-        return ev_ebitda;
-    }
-
-    public float getP_b() {
-        return p_b;
-    }
-
-    public float getP_s() {
-        return p_s;
-    }
-
-    public float getPer() {
-        return per;
-    }
-
-    public void aniadirPuntuacion(){
-        this.calificacion= (int) (sumaEV_FCF(this.ev_fcf)*1.66+sumaEV_EBITDA(this.ev_ebitda)*1.66);
-    }
-
-    public void aniadirPuntuacionAvanzada(){
-        this.calificacion= (int) (sumaEV_FCF(this.ev_fcf)+sumaEV_EBITDA(this.ev_ebitda)+sumaPER(this.per)+sumaPB(this.p_b)+sumaPS(this.p_s));
-    }
-
-    public static float sumaEV_FCF(float ev_fcf){
-        float nota=0;
-        int i=5;
-        int barometro=24;
-        do{
-            nota += 0.5;
-            barometro= barometro-2;
-            i--;
-        }while(i>0 && ev_fcf<barometro);
-        return nota;
-    }
-
-    public static float sumaEV_EBITDA(float ev_ebitda){
-        float nota=0;
-        int i=5;
-        int barometro=18;
-        do{
-            nota+=0.5;
-            barometro-=2;
-            i--;
-        }while(i>0 && ev_ebitda<barometro);
-        return nota;
-    }
-
-    public static float sumaPER(float per){
-        float nota=0;
-        int i=3;
-        int barometro=20;
-        do{
-            nota+=0.25;
-            barometro-=3;
-            i--;
-        }while(i>0 && per<barometro);
-        return nota;
-    }
-
-    public static float sumaPB(float p_b){
-        float nota=0;
-        int i=5;
-        float barometro= (float) 5.9;
-        do{
-            nota+=0.25;
-            barometro-=0.5;
-            i--;
-        }while(i>0 && p_b<barometro);
-        return nota;
-    }
-
-    public static float sumaPS(float p_s){
-        float nota=0;
-        int i=3;
-        float barometro= (float) 3.7;
-        do{
-            nota+=0.25;
-            barometro-=0.3;
-            i--;
-        }while(i>0 && p_s<barometro);
-        return (float) (nota*1.5);
-    }
-
+    //This functions are necessaries for the 'Sector' && 'Subsector'
     private int elegir(String[] elementos){
         boolean comprobar=false;
         Scanner entrada = new Scanner(System.in);
@@ -414,5 +269,182 @@ public class Empresa {
         return "";
     }
 
+    //It calculates the amount of dividend per year based on the dividend period
+    private static float calculo_dividendo(int opcion, float dividendo){
+        if(opcion==1){
+            dividendo*=4;
+        }
+        else if(opcion==2){
+            dividendo*=2;
+        }
+        return dividendo;
+    }
+
+    //Auxiliary menu for the dividend
+    private static void mensajeDividendo(){
+        System.out.println("¿Es es dividendo trimestral, semestral o anual?");
+        System.out.println("Indique el tipo de dividendo que es:");
+        System.out.println("1.Dividendo trimestral");
+        System.out.println("2.Dividendo semestral");
+        System.out.println("3.Dividendo anual");
+    }
+
+    //Auxiliary function for 'calculo_dividendo'
+    private static int tipoDividendo(){
+        mensajeDividendo();
+        Scanner entrada = new Scanner(System.in);
+        int opcion = entrada.nextInt();
+        entrada.nextLine();
+        return opcion;
+    }
+
+    //It calculates the PayOut of a stock
+    private static float calculo_payout(float num_acciones, float dividendo){
+        return num_acciones*dividendo;
+    }
+
+    //It calculates the PayOut/FCF of a stock
+    private static float Payout_FCF(float payout, float fcf){
+        return (payout/fcf)*100;
+    }
+
+    //It calculates the capitalization of a stock
+    private static float calculo_capitalizacion(BigDecimal cotizacion, float acciones){
+        //BigDecimal cotizacion = new BigDecimal(2.36359);
+        float rounded = cotizacion.setScale(2, RoundingMode.DOWN).floatValue();
+        return rounded*acciones;
+    }
+
+    //It calculates the net debt of a stock
+    private static float deuda_neta(float deudalargo, float deudacorto){
+        return deudacorto + deudalargo;
+    }
+
+    //It calculates the Enterprise Value of a stock
+    private static float enterprise_value(float calculo_capitalizacion, float cash, float deuda_neta){
+        return calculo_capitalizacion+deuda_neta-cash;
+    }
+
+    //It calculates the EV/FCF of a stock
+    private static float EV_FCF(float enterprise_value, float fcf){
+        return enterprise_value/fcf;
+    }
+
+    //It calculates the EBITDA of a stock
+    private static float EBITDA(float income, float deprecia, float amort){
+        return income+deprecia+amort;
+    }
+
+    //It calculates the EV/EBITDA of a stock
+    private static float EV_EBITDA(float ev, float ebitda){
+        return ev/ebitda;
+    }
+
+    //It calculates the PER of a stock
+    private static float PER(BigDecimal cotizacion, float acciones, float ben_neto){
+        float rounded = cotizacion.setScale(2, RoundingMode.DOWN).floatValue();
+        return rounded/(ben_neto/acciones);
+    }
+
+    //It calculates the P/B ratio of a stock
+    private static float P_B(BigDecimal cotizacion, float acciones, float equity){
+        float rounded = cotizacion.setScale(2, RoundingMode.DOWN).floatValue();
+        return rounded/(equity/acciones);
+    }
+
+    //It calculates the P/S ratio of a stock
+    private static float P_S(BigDecimal cotizacion, float acciones, float net_revenues){
+        float rounded = cotizacion.setScale(2, RoundingMode.DOWN).floatValue();
+        return rounded/(net_revenues/acciones);
+    }
+
+    //It calculates the punctuation of a basic analysis
+    public void aniadirPuntuacion(){
+        this.calificacion= (int) (sumaEV_FCF(this.ev_fcf)*1.66+sumaEV_EBITDA(this.ev_ebitda)*1.66);
+    }
+
+    //It calculates the punctuation of an advanced analysis
+    public void aniadirPuntuacionAvanzada(){
+        this.calificacion= (int) (sumaEV_FCF(this.ev_fcf)+sumaEV_EBITDA(this.ev_ebitda)+sumaPER(this.per)+sumaPB(this.p_b)+sumaPS(this.p_s));
+    }
+
+    //Auxiliary method for the punctuation
+    public static float sumaEV_FCF(float ev_fcf){
+        float nota=0;
+        int i=5;
+        int barometro=24;
+        do{
+            nota += 0.5;
+            barometro= barometro-2;
+            i--;
+        }while(i>0 && ev_fcf<barometro);
+        return nota;
+    }
+
+    //Auxiliary method for the punctuation
+    public static float sumaEV_EBITDA(float ev_ebitda){
+        float nota=0;
+        int i=5;
+        int barometro=18;
+        do{
+            nota+=0.5;
+            barometro-=2;
+            i--;
+        }while(i>0 && ev_ebitda<barometro);
+        return nota;
+    }
+
+    //Auxiliary method for the punctuation
+    public static float sumaPER(float per){
+        float nota=0;
+        int i=3;
+        int barometro=20;
+        do{
+            nota+=0.25;
+            barometro-=3;
+            i--;
+        }while(i>0 && per<barometro);
+        return nota;
+    }
+
+    //Auxiliary method for the punctuation
+    public static float sumaPB(float p_b){
+        float nota=0;
+        int i=5;
+        float barometro= (float) 5.9;
+        do{
+            nota+=0.25;
+            barometro-=0.5;
+            i--;
+        }while(i>0 && p_b<barometro);
+        return nota;
+    }
+
+    //Auxiliary method for the punctuation
+    public static float sumaPS(float p_s){
+        float nota=0;
+        int i=3;
+        float barometro= (float) 3.7;
+        do{
+            nota+=0.25;
+            barometro-=0.3;
+            i--;
+        }while(i>0 && p_s<barometro);
+        return (float) (nota*1.5);
+    }
+
+    //It updates all the data based in the Stock Price
+    public void actualizarDatos(){
+        this.cotizacion=Finance.encontrarPrecioApi(ticker);
+        float capital=calculo_capitalizacion(cotizacion, acciones);
+        float enterprise=enterprise_value(capital, cash, deuda);
+        this.ev_fcf=EV_FCF(enterprise, fcf);
+        this.ev_ebitda=EV_EBITDA(enterprise, ebitda);
+        if(this.per==0){
+            this.aniadirPuntuacion();
+        }else{
+            this.aniadirPuntuacionAvanzada();
+        }
+    }
 
 }
