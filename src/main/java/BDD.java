@@ -158,8 +158,10 @@ public class BDD {
             Statement myStmt = myConn.createStatement();
             String sql = "UPDATE empresas SET `EV/FCF` = '"+e.getEv_fcf()+"' WHERE `Ticker`='"+e.getTicker()+"'";
             String sql2 = "UPDATE empresas SET `EV/EBITDA` = '"+e.getEv_ebitda()+"' WHERE `Ticker`='"+e.getTicker()+"'";
+            String sql3 = "UPDATE empresas SET `Puntuacion` = '"+e.getCalificacion()+"' WHERE `Ticker`='"+e.getTicker()+"'";
             int rowsAffected=myStmt.executeUpdate(sql);
             int rowsAffected2=myStmt.executeUpdate(sql2);
+            int rowsAffected3=myStmt.executeUpdate(sql3);
         }catch(Exception exc){
             exc.printStackTrace();
         }

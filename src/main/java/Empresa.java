@@ -123,6 +123,12 @@ public class Empresa {
         float enterprise=enterprise_value(capital, cash, deuda);
         this.ev_fcf=EV_FCF(enterprise, fcf);
         this.ev_ebitda=EV_EBITDA(enterprise, ebitda);
+        if(this.per==0){
+            this.aniadirPuntuacion();
+        }else{
+            this.aniadirPuntuacionAvanzada();
+        }
+
     }
 
     public void introducirParametrosAvanzados(){
