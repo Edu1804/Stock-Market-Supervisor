@@ -5,7 +5,7 @@ public class To_DO {
     3)Refinar la función Puntuación y hacerla más útil
     4)Ver vídeos tutoriales de gradle de youtube (historial)
     5)Pensar tareas nueva semana
-    6)Arreglar problemas del menú principal
+    6)Arreglar problemas del menú principal (done)
 
      */
 }

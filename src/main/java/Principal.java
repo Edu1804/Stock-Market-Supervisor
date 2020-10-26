@@ -18,7 +18,7 @@ public class Principal {
             do {
                 resul = mostrarMenuPrincipal();
                 menuPrincipal(resul);
-            } while (resul != 5);
+            } while (resul != 6);
     }
 
     //Main menu display that shows all the possible options
