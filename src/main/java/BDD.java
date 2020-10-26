@@ -38,10 +38,13 @@ CREATE TABLE empresas (
     `P/S` float(6,3) DEFAULT NULL,
     Puntuacion int(3) DEFAULT NULL,
     Numero_Acciones float(9,2) DEFAULT NULL,
-    Dinero_Efectivo int(9) DEFAULT NULL,
-    Deuda int(9) DEFAULT NULL,
-    Flujo_Caja_Libre int(9) DEFAULT NULL,
-    EBITDA int(9) DEFAULT NULL,
+    Dinero_Efectivo float(9,2) DEFAULT NULL,
+    Deuda float(9,2) DEFAULT NULL,
+    Flujo_Caja_Libre float(9,2) DEFAULT NULL,
+    EBITDA float(9,2) DEFAULT NULL,
+    Beneficio_Neto float(9,2) DEFAULT NULL,
+    Equity float(9,2) DEFAULT NULL,
+    Net_Revenues float(9,2) DEFAULT NULL,
     PRIMARY KEY (Ticker)
     )
 
@@ -181,8 +184,11 @@ SELECT Ticker, Nombre, Sector, Subsector, `Payout/FCF(%)`, `EV/FCF`, `EV/EBITDA`
                 float deuda=rowsAffected.getFloat("Deuda");
                 float fcf=rowsAffected.getFloat("Flujo_Caja_Libre");
                 float ebitda=rowsAffected.getFloat("EBITDA");
+                float ben_neto=rowsAffected.getFloat("Beneficio_Neto");
+                float equity=rowsAffected.getFloat("Equity");
+                float net_revenues=rowsAffected.getFloat("Net_Revenues");
 
-                Empresa e = new Empresa(ticker, nombre, sector, subsector, payout_fcf, ev_fcf, ev_ebitda, p_b, p_s, per, puntuacion, acciones, cash, deuda, fcf, ebitda);
+                Empresa e = new Empresa(ticker, nombre, sector, subsector, payout_fcf, ev_fcf, ev_ebitda, p_b, p_s, per, puntuacion, acciones, cash, deuda, fcf, ebitda, ben_neto, equity, net_revenues);
                 lista.add(e);
             }
         }

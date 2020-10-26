@@ -34,6 +34,11 @@ public class Empresa {
     private float fcf;
     private float ebitda;
 
+    //Other atrributes for the advanced analysis that have been created in order to support the others
+    private float ben_neto;
+    private float equity;
+    private float net_revenues;
+
     //Arrays for the atrributes 'Sector' & 'Subsector'
     static String[] sectores=new String[]{"Defensivo","Sensitivo","Ciclico"};
     static String[] subsectores1=new String[]{"Consumo Defensivo","Salud","Utilities"};
@@ -55,7 +60,7 @@ public class Empresa {
     }
 
     //Full constructor
-    public Empresa(String ticker, String nombre, String sector, String subsector, float payout_fcf, float ev_fcf, float ev_ebitda, float p_b, float p_s, float per, float puntuacion, float acciones, float cash, float deuda, float fcf, float ebitda) {
+    public Empresa(String ticker, String nombre, String sector, String subsector, float payout_fcf, float ev_fcf, float ev_ebitda, float p_b, float p_s, float per, float puntuacion, float acciones, float cash, float deuda, float fcf, float ebitda, float ben_neto, float equity, float net_revenues) {
         this.nombre = nombre;
         this.sector = sector;
         this.subsector = subsector;
@@ -72,6 +77,9 @@ public class Empresa {
         this.acciones=acciones;
         this.fcf=fcf;
         this.ebitda=ebitda;
+        this.ben_neto=ben_neto;
+        this.equity=equity;
+        this.net_revenues=net_revenues;
     }
 
     //Equals method
@@ -224,15 +232,15 @@ public class Empresa {
     public void introducirParametrosAvanzados(){
         Scanner entrada = new Scanner(System.in);
         System.out.println("Introduzca el beneficio neto(net income): ");
-        float ben_neto=entrada.nextFloat();
+        this.ben_neto=entrada.nextFloat();
         entrada.nextLine();
         this.per=PER(cotizacion, acciones, ben_neto);
         System.out.println("Introduzca el patrimono(equity): ");
-        float equity=entrada.nextFloat();
+        this.equity=entrada.nextFloat();
         entrada.nextLine();
         this.p_b=P_B(cotizacion, acciones, equity);
         System.out.println("Introduzca el total de ventas(net revenue): ");
-        float net_revenues=entrada.nextFloat();
+        this.net_revenues=entrada.nextFloat();
         entrada.nextLine();
         this.p_s=P_S(cotizacion, acciones, net_revenues);
     }
@@ -444,6 +452,10 @@ public class Empresa {
             this.aniadirPuntuacion();
         }else{
             this.aniadirPuntuacionAvanzada();
+            this.per=PER(cotizacion, acciones, ben_neto);
+            this.p_b=P_B(cotizacion, acciones, equity);
+            this.p_s=P_S(cotizacion, acciones, net_revenues);
+
         }
     }
 
