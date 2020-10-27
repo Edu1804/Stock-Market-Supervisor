@@ -5,7 +5,7 @@ import java.util.Scanner;
 import java.util.HashSet;
 
 
-public class Principal {
+public class Main {
 
     //HashSt necessary to keep the data from the BDD
     static HashSet<Empresa>lista=new HashSet<Empresa>();
@@ -18,7 +18,7 @@ public class Principal {
             do {
                 resul = mostrarMenuPrincipal();
                 menuPrincipal(resul);
-            } while (resul != 6);
+            } while (resul != -1);
     }
 
     //Main menu display that shows all the possible options
@@ -33,6 +33,9 @@ public class Principal {
         Scanner entrada=new Scanner(System.in);
         int opcion=entrada.nextInt();
         entrada.nextLine();
+        if(opcion==6){
+            opcion=-1;
+        }
         return opcion;
     }
 
@@ -65,7 +68,7 @@ public class Principal {
                 BDD.mostrarBDD();
                 break;
             case 5:
-                //Actualizar los datos de la base de datos respecto a los precios actuales
+                //Updates the BDD based in the actual price
                 actualizarDatosBDD();
                 break;
             case 6:
@@ -99,7 +102,7 @@ public class Principal {
                 BDD.aniadirNuevaEmpresa(e);
                 break;
             case 2:
-                //Análisis avanzado
+                //Advanced analysis
                 Empresa b = new Empresa();
                 b.introducirParametros();
                 b.introducirParametrosAvanzados();
