@@ -368,12 +368,12 @@ public class Empresa {
 
     //It calculates the punctuation of a basic analysis
     public void aniadirPuntuacion(){
-        this.calificacion= (int) (sumaEV_FCF(this.ev_fcf)*1.66+sumaEV_EBITDA(this.ev_ebitda)*1.66);
+        this.calificacion= (float) (sumaEV_FCF(this.ev_fcf)*1.66+sumaEV_EBITDA(this.ev_ebitda)*1.66);
     }
 
     //It calculates the punctuation of an advanced analysis
     public void aniadirPuntuacionAvanzada(){
-        this.calificacion= (int) (sumaEV_FCF(this.ev_fcf)+sumaEV_EBITDA(this.ev_ebitda)+sumaPER(this.per)+sumaPB(this.p_b)+sumaPS(this.p_s));
+        this.calificacion= (float) (sumaEV_FCF(this.ev_fcf)+sumaEV_EBITDA(this.ev_ebitda)+sumaPER(this.per)+sumaPB(this.p_b)+sumaPS(this.p_s));
     }
 
     //Auxiliary method for the punctuation

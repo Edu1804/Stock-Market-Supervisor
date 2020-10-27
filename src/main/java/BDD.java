@@ -36,7 +36,7 @@ CREATE TABLE empresas (
     PER float(4,2) DEFAULT NULL,
     `P/B` float(6,3) DEFAULT NULL,
     `P/S` float(6,3) DEFAULT NULL,
-    Puntuacion int(3) DEFAULT NULL,
+    Puntuacion float(6, 3) DEFAULT NULL,
     Numero_Acciones float(9,2) DEFAULT NULL,
     Dinero_Efectivo float(9,2) DEFAULT NULL,
     Deuda float(9,2) DEFAULT NULL,
