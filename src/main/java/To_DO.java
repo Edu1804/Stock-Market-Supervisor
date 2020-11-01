@@ -7,6 +7,7 @@ public class To_DO {
     5)Pensar tareas nueva semana (done)
     6)Arreglar problemas del menú principal (done)
     7)Hacer pruebas de todo
+    8) Empezar programa CSV: pruebas básicas
      */
 
     /*Nuevas tareas:
