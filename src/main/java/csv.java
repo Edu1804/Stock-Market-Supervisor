@@ -1,16 +1,25 @@
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import com.opencsv.*;
 
-public class CSVReader {
+
+public class csv {
     private static final String CSV_FILE_PATH
             = "C:\\Users\\Eduardo\\Documents\\CSV\\pruebacsv.csv";
+
     private static final String CSV_FILE_CUSTOM_SEPERATOR
+            = "C:\\Users\\Eduardo\\Documents\\CSV\\pruebacsv.csv";
+
+    private static final String csvFile
             = "C:\\Users\\Eduardo\\Documents\\CSV\\pruebacsv.csv";
 
     public static void main(String[] args)
     {
-
             System.out.println("Read Data Line by Line With Header \n");
             readDataLineByLine(CSV_FILE_PATH);
             System.out.println("_______________________________________________");
@@ -19,11 +28,9 @@ public class CSVReader {
             readAllDataAtOnce(CSV_FILE_PATH);
             System.out.println("_______________________________________________");
 
-
-
-        System.out.println("Custom Seperator here semi-colon\n");
-        readDataFromCustomSeperator(CSV_FILE_CUSTOM_SEPERATOR);
-        System.out.println("_______________________________________________");
+            System.out.println("Custom Seperator here semi-colon\n");
+            readDataFromCustomSeperator(CSV_FILE_CUSTOM_SEPERATOR);
+            System.out.println("_______________________________________________");
     }
 
     public static void readDataLineByLine(String file)
@@ -63,9 +70,7 @@ public class CSVReader {
 
             // create csvReader object
             // and skip first Line
-            com.opencsv.CSVReader csvReader = new CSVReaderBuilder(filereader)
-                    .withSkipLines(1)
-                    .build();
+            com.opencsv.CSVReader csvReader = new CSVReaderBuilder(filereader).withSkipLines(1).build();
             List<String[]> allData = csvReader.readAll();
 
             // print Data
