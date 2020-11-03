@@ -31,6 +31,7 @@ public class csv {
             System.out.println("Custom Seperator here semi-colon\n");
             readDataFromCustomSeperator(CSV_FILE_CUSTOM_SEPERATOR);
             System.out.println("_______________________________________________");
+
     }
 
     public static void readDataLineByLine(String file)
