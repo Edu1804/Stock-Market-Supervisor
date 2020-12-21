@@ -9,8 +9,8 @@ public class BDD {
     //Just execute this query in mysql: SET GLOBAL time_zone = '+1:00'; (for Spain)
     public static void inicializarConexion(){
         String dbUrl = "jdbc:mysql://localhost:3306/stock?useSSL=false";
-        String user = "stockuser";
-        String pass = "stockuser";
+        String user = "connectionDBA";
+        String pass = "Prueba456Prueba123";
         try{
             //Comunicación con la base de datos
             myConn=DriverManager.getConnection( dbUrl, user, pass);
@@ -22,7 +22,9 @@ public class BDD {
     }
 
         /*
-    Queries for MySQL in order to create the table
+
+    Queries for MySQL in order to create the table:
+
 use stock;
 drop table if exists empresas;
 CREATE TABLE empresas (
@@ -48,9 +50,15 @@ CREATE TABLE empresas (
     PRIMARY KEY (Ticker)
     )
 
+    It prints basic information from the table:
 
     SELECT Ticker, Nombre, Sector, Subsector, `Payout/FCF(%)`, `EV/FCF`, `EV/EBITDA`, Puntuacion FROM stock.empresas;
-SELECT Ticker, Nombre, Sector, Subsector, `Payout/FCF(%)`, `EV/FCF`, `EV/EBITDA`, PER, `P/B`, `P/S` Puntuacion FROM stock.empresas;
+    SELECT Ticker, Nombre, Sector, Subsector, `Payout/FCF(%)`, `EV/FCF`, `EV/EBITDA`, PER, `P/B`, `P/S` Puntuacion FROM stock.empresas;
+
+    View that shows the main columns:
+
+    create view empresas_vision as select Ticker, Nombre, `Payout/FCF(%)`, `EV/FCF`, `EV/EBITDA`, PER, `P/B`, `P/S`, Puntuacion
+from empresas;
      */
 
     //This function add a stock into the BDD
@@ -78,6 +86,7 @@ SELECT Ticker, Nombre, Sector, Subsector, `Payout/FCF(%)`, `EV/FCF`, `EV/EBITDA`
                         "" + " '"+e.getDeuda()+"',"+
                         "" + " '"+e.getFcf()+"',"+
                         "" + " '"+e.getEbitda()+"')");
+                System.out.println("Añadida correctamente: "+rowsAffected);
             }
         }
         catch (Exception exc){

@@ -8,15 +8,15 @@ import java.util.NoSuchElementException;
 import com.opencsv.*;
 
 
-public class csv {
+public class CSV {
     private static final String CSV_FILE_PATH
-            = "C:\\Users\\Eduardo\\Documents\\CSV\\pruebacsv.csv";
+            = "C:\\Users\\Eduardo\\Documents\\CSV\\pruebacsv.CSV";
 
     private static final String CSV_FILE_CUSTOM_SEPERATOR
-            = "C:\\Users\\Eduardo\\Documents\\CSV\\pruebacsv.csv";
+            = "C:\\Users\\Eduardo\\Documents\\CSV\\pruebacsv.CSV";
 
     private static final String csvFile
-            = "C:\\Users\\Eduardo\\Documents\\CSV\\pruebacsv.csv";
+            = "C:\\Users\\Eduardo\\Documents\\CSV\\pruebacsv.CSV";
 
     public static void main(String[] args)
     {
@@ -91,7 +91,7 @@ public class csv {
     {
         try {
             // Create object of filereader
-            // class with csv file as parameter.
+            // class with CSV file as parameter.
             FileReader filereader = new FileReader(file);
 
             // create csvParser object with

@@ -17,8 +17,10 @@ public class Main {
             BDD.actualizarDatosSet(lista);
             do {
                 resul = mostrarMenuPrincipal();
-                menuPrincipal(resul);
-            } while (resul != -1);
+                if(resul != -1 && resul !=6){
+                    menuPrincipal(resul);
+                }
+            } while (resul != -1 && resul != 6);
     }
 
     //Main menu display that shows all the possible options
@@ -33,9 +35,10 @@ public class Main {
         Scanner entrada=new Scanner(System.in);
         int opcion=entrada.nextInt();
         entrada.nextLine();
-        if(opcion==6){
+        /*if(opcion==6){
             opcion=-1;
         }
+         */
         return opcion;
     }
 
