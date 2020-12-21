@@ -190,73 +190,23 @@ public class Empresa {
         System.out.println("Introduzca el ticker de la empresa: ");
         this.ticker=entrada.nextLine();
         this.cotizacion=Finance.encontrarPrecioApi(ticker);
-
         this.acciones=numeroAcciones();
-
-        if(!comprobarValorPositivo(acciones)){
-
-        }
-        System.out.println("Indique de cuanto es el dividendo cada vez que te pagan: ");
-        float dividendo=entrada.nextFloat();
-        entrada.nextLine();
-        comprobarValorPositivo(dividendo);
-
-
+        float dividendo=valorDividendo();
         dividendo=calculo_dividendo(tipoDividendo(), dividendo);
         float payout_total=calculo_payout(acciones, dividendo);
-
-
-        System.out.println("Introduzca el FCF de la empresa en el año fiscal actual: ");
-        this.fcf = entrada.nextFloat();
-        comprobarValorPositivo(fcf);
-
-
+        this.fcf = valorFCF();
         this.payout_fcf=Payout_FCF(payout_total, fcf);
         entrada.nextLine();
-
-
-        System.out.println("Introduzca la deuda a largo plazo: ");
-        float deuda_largo=entrada.nextFloat();
-        entrada.nextLine();
-        comprobarValorPositivo(deuda_largo);
-
-
-        System.out.println("Introduzca la deuda a corto plazo: ");
-        float deuda_corto=entrada.nextFloat();
-        entrada.nextLine();
-        comprobarValorPositivo(deuda_corto);
-
-
-        System.out.println("Introduzca el dinero en efectivo (Cash & cash equivalents): ");
-        this.cash=entrada.nextFloat();
-        entrada.nextLine();
-        comprobarValorPositivo(cash);
-
-
+        float deuda_largo=valorDeudaLargoPlazo();
+        float deuda_corto=valorDeudaCortoPlazo();
+        this.cash=valorCash();
         float capital=calculo_capitalizacion(cotizacion, acciones);
         this.deuda=deuda_neta(deuda_largo, deuda_corto);
         float enterprise=enterprise_value(capital, cash, deuda);
         this.ev_fcf=EV_FCF(enterprise, fcf);
-
-
-        System.out.println("Introduzca el beneficio neto: ");
-        float ebit=entrada.nextFloat();
-        entrada.nextLine();
-        comprobarValorPositivo(ebit);
-
-
-        System.out.println("Introduzca la depreciación: ");
-        float depreciacion=entrada.nextFloat();
-        entrada.nextLine();
-        comprobarValorPositivo(depreciacion);
-
-
-        System.out.println("Introduzca la amortización: ");
-        float amortizacion=entrada.nextFloat();
-        entrada.nextLine();
-        comprobarValorPositivo(amortizacion);
-
-
+        float ebit=valorEBIT();
+        float depreciacion=valorDepreciacion();
+        float amortizacion=valorAmortizacion();
         this.ebitda=EBITDA(ebit, depreciacion, amortizacion);
         this.ev_ebitda=EV_EBITDA(enterprise, ebitda);
     }
@@ -323,7 +273,7 @@ public class Empresa {
 
     //Auxiliary menu for the dividend
     private static void mensajeDividendo(){
-        System.out.println("¿Es es dividendo trimestral, semestral o anual?");
+        System.out.println("¿Es el dividendo trimestral, semestral o anual?");
         System.out.println("Indique el tipo de dividendo que es:");
         System.out.println("1.Dividendo trimestral");
         System.out.println("2.Dividendo semestral");
@@ -502,6 +452,7 @@ public class Empresa {
         return positive;
     }
 
+    //It asks the user for the number of shareholders of a company
     public float numeroAcciones(){
         Scanner entrada = new Scanner(System.in);
         System.out.println("Introduzca el numero de acciones diluidas de la empresa: ");
@@ -513,6 +464,118 @@ public class Empresa {
             acciones=numeroAcciones();
         }
         return acciones;
+    }
+
+    //It asks the user for the amount of the dividend each time that the company pays it
+    public float valorDividendo(){
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("Indique de cuanto es el dividendo cada vez que te pagan: ");
+        float dividendo=0;
+        dividendo=entrada.nextFloat();
+        entrada.nextLine();
+        if(!comprobarValorPositivo(dividendo)){
+            System.out.println("Error, el dividendo debe de ser positivo");
+            dividendo=valorDividendo();
+        }
+        return dividendo;
+    }
+
+    //It asks the user for the free cash flow of the company
+    public float valorFCF(){
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("Introduzca el FCF de la empresa en el año fiscal actual: ");
+        float FCF=0;
+        FCF=entrada.nextFloat();
+        entrada.nextLine();
+        if(!comprobarValorPositivo(FCF)){
+            System.out.println("Error, el flujo de caja libre debe de ser positivo");
+            FCF=valorDividendo();
+        }
+        return FCF;
+    }
+
+    //It asks the user for the long term debt of the company
+    public float valorDeudaLargoPlazo(){
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("Introduzca la deuda a largo plazo: ");
+        float valor=0;
+        valor=entrada.nextFloat();
+        entrada.nextLine();
+        if(!comprobarValorPositivo(valor)){
+            System.out.println("Error, la deuda a largo plazo debe de ser positiva");
+            valor=valorDividendo();
+        }
+        return valor;
+    }
+
+    //It asks the user for the short term debt of the company
+    public float valorDeudaCortoPlazo(){
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("Introduzca la deuda a corto plazo: ");
+        float valor=0;
+        valor=entrada.nextFloat();
+        entrada.nextLine();
+        if(!comprobarValorPositivo(valor)){
+            System.out.println("Error, la deuda a corto plazo debe de ser positiva");
+            valor=valorDividendo();
+        }
+        return valor;
+    }
+
+    //It asks the user for the available cash of the company
+    public float valorCash(){
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("Introduzca el dinero en efectivo (Cash & cash equivalents): ");
+        float valor=0;
+        valor=entrada.nextFloat();
+        entrada.nextLine();
+        if(!comprobarValorPositivo(valor)){
+            System.out.println("Error, el dinero en efectivo debe de ser positivo");
+            valor=valorDividendo();
+        }
+        return valor;
+    }
+
+    //It asks the user for the net income of the company
+    public float valorEBIT(){
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("Introduzca el beneficio neto: ");
+        float valor=0;
+        valor=entrada.nextFloat();
+        entrada.nextLine();
+        if(!comprobarValorPositivo(valor)){
+            System.out.println("Error, el beneficio neto debe de ser positivo");
+            valor=valorDividendo();
+        }
+        return valor;
+    }
+
+    //It asks the user for the depreciation of the company
+    public float valorDepreciacion(){
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("Introduzca la depreciación: ");
+        float valor=0;
+        valor=entrada.nextFloat();
+        entrada.nextLine();
+        if(!comprobarValorPositivo(valor)){
+            System.out.println("Error, la depreciación debe de ser positiva");
+            valor=valorDividendo();
+        }
+        return valor;
+    }
+
+    //It asks the user for the amortization of the company
+    public float valorAmortizacion(){
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("Introduzca la amortización: ");
+        float valor=0;
+        valor=entrada.nextFloat();
+        entrada.nextLine();
+        if(!comprobarValorPositivo(valor)){
+            System.out.println("Error, la amortización debe de ser positiva");
+            valor=valorDividendo();
+        }
+        return valor;
     }
 
 }
