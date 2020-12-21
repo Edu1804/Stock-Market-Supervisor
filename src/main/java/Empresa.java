@@ -190,40 +190,73 @@ public class Empresa {
         System.out.println("Introduzca el ticker de la empresa: ");
         this.ticker=entrada.nextLine();
         this.cotizacion=Finance.encontrarPrecioApi(ticker);
-        System.out.println("Introduzca el numero de acciones diluidas de la empresa: ");
-        this.acciones=entrada.nextFloat();
-        entrada.nextLine();
+
+        this.acciones=numeroAcciones();
+
+        if(!comprobarValorPositivo(acciones)){
+
+        }
         System.out.println("Indique de cuanto es el dividendo cada vez que te pagan: ");
         float dividendo=entrada.nextFloat();
         entrada.nextLine();
+        comprobarValorPositivo(dividendo);
+
+
         dividendo=calculo_dividendo(tipoDividendo(), dividendo);
         float payout_total=calculo_payout(acciones, dividendo);
+
+
         System.out.println("Introduzca el FCF de la empresa en el año fiscal actual: ");
         this.fcf = entrada.nextFloat();
+        comprobarValorPositivo(fcf);
+
+
         this.payout_fcf=Payout_FCF(payout_total, fcf);
         entrada.nextLine();
+
+
         System.out.println("Introduzca la deuda a largo plazo: ");
         float deuda_largo=entrada.nextFloat();
         entrada.nextLine();
+        comprobarValorPositivo(deuda_largo);
+
+
         System.out.println("Introduzca la deuda a corto plazo: ");
         float deuda_corto=entrada.nextFloat();
         entrada.nextLine();
+        comprobarValorPositivo(deuda_corto);
+
+
         System.out.println("Introduzca el dinero en efectivo (Cash & cash equivalents): ");
         this.cash=entrada.nextFloat();
         entrada.nextLine();
+        comprobarValorPositivo(cash);
+
+
         float capital=calculo_capitalizacion(cotizacion, acciones);
         this.deuda=deuda_neta(deuda_largo, deuda_corto);
         float enterprise=enterprise_value(capital, cash, deuda);
         this.ev_fcf=EV_FCF(enterprise, fcf);
+
+
         System.out.println("Introduzca el beneficio neto: ");
         float ebit=entrada.nextFloat();
         entrada.nextLine();
+        comprobarValorPositivo(ebit);
+
+
         System.out.println("Introduzca la depreciación: ");
         float depreciacion=entrada.nextFloat();
         entrada.nextLine();
+        comprobarValorPositivo(depreciacion);
+
+
         System.out.println("Introduzca la amortización: ");
         float amortizacion=entrada.nextFloat();
         entrada.nextLine();
+        comprobarValorPositivo(amortizacion);
+
+
         this.ebitda=EBITDA(ebit, depreciacion, amortizacion);
         this.ev_ebitda=EV_EBITDA(enterprise, ebitda);
     }
@@ -457,6 +490,29 @@ public class Empresa {
             this.p_s=P_S(cotizacion, acciones, net_revenues);
 
         }
+    }
+
+    //It checks that a float value is correct
+    public boolean comprobarValorPositivo(float valor){
+        //We assume that the value is positive at the beginning
+        boolean positive=true;
+        if(valor<0){
+            positive=false;
+        }
+        return positive;
+    }
+
+    public float numeroAcciones(){
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("Introduzca el numero de acciones diluidas de la empresa: ");
+        float acciones=0;
+        acciones=entrada.nextFloat();
+        entrada.nextLine();
+        if(!comprobarValorPositivo(acciones)){
+            System.out.println("Error, el número de acciones debe de ser positivo");
+            acciones=numeroAcciones();
+        }
+        return acciones;
     }
 
 }
