@@ -213,18 +213,11 @@ public class Empresa {
 
     //Function necessary if you are doing an advanced analysis
     public void introducirParametrosAvanzados(){
-        Scanner entrada = new Scanner(System.in);
-        System.out.println("Introduzca el beneficio neto(net income): ");
-        this.ben_neto=entrada.nextFloat();
-        entrada.nextLine();
+        this.ben_neto=valorEBIT();
         this.per=PER(cotizacion, acciones, ben_neto);
-        System.out.println("Introduzca el patrimono(equity): ");
-        this.equity=entrada.nextFloat();
-        entrada.nextLine();
+        this.equity=valorPatrimonio();
         this.p_b=P_B(cotizacion, acciones, equity);
-        System.out.println("Introduzca el total de ventas(net revenue): ");
-        this.net_revenues=entrada.nextFloat();
-        entrada.nextLine();
+        this.net_revenues=valorVentas();
         this.p_s=P_S(cotizacion, acciones, net_revenues);
     }
 
@@ -573,6 +566,34 @@ public class Empresa {
         entrada.nextLine();
         if(!comprobarValorPositivo(valor)){
             System.out.println("Error, la amortización debe de ser positiva");
+            valor=valorDividendo();
+        }
+        return valor;
+    }
+
+    //It asks the user for the net revenues of the company
+    public float valorVentas(){
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("Introduzca las ventas (net revenues): ");
+        float valor=0;
+        valor=entrada.nextFloat();
+        entrada.nextLine();
+        if(!comprobarValorPositivo(valor)){
+            System.out.println("Error, las ventas deben de ser positivas");
+            valor=valorDividendo();
+        }
+        return valor;
+    }
+
+    //It asks the user for the equity of the company
+    public float valorPatrimonio(){
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("Introduzca el patrimonio (equity): ");
+        float valor=0;
+        valor=entrada.nextFloat();
+        entrada.nextLine();
+        if(!comprobarValorPositivo(valor)){
+            System.out.println("Error, el patrimonio debe de ser positivo");
             valor=valorDividendo();
         }
         return valor;
