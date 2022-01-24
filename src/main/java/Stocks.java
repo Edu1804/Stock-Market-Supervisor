@@ -3,7 +3,7 @@ import java.math.RoundingMode;
 import java.util.Objects;
 import java.util.Scanner;
 
-public class Empresa {
+public class Stocks {
 
     //Main attributes that are not expected to change during the execution of the code
     private String nombre;
@@ -46,7 +46,7 @@ public class Empresa {
     static String[] subsectores3=new String[]{"Consumo Ciclico","Servicios Financieros","Real Estate","Materiales Basicos"};
 
     //Empty basic constructor
-    public Empresa(){
+    public Stocks(){
         this.nombre="";
         this.sector="";
         this.subsector="";
@@ -54,13 +54,13 @@ public class Empresa {
     }
 
     //constructor for the Ticker
-    public Empresa(String ticker){
+    public Stocks(String ticker){
         this();
         this.ticker=ticker;
     }
 
     //Full constructor
-    public Empresa(String ticker, String nombre, String sector, String subsector, float payout_fcf, float ev_fcf, float ev_ebitda, float p_b, float p_s, float per, float puntuacion, float acciones, float cash, float deuda, float fcf, float ebitda, float ben_neto, float equity, float net_revenues) {
+    public Stocks(String ticker, String nombre, String sector, String subsector, float payout_fcf, float ev_fcf, float ev_ebitda, float p_b, float p_s, float per, float puntuacion, float acciones, float cash, float deuda, float fcf, float ebitda, float ben_neto, float equity, float net_revenues) {
         this.nombre = nombre;
         this.sector = sector;
         this.subsector = subsector;
@@ -87,8 +87,8 @@ public class Empresa {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Empresa empresa = (Empresa) o;
-        return ticker.equals(empresa.ticker);
+        Stocks stocks = (Stocks) o;
+        return ticker.equals(stocks.ticker);
     }
 
     //Many getters and setters that are used in many classes
@@ -177,52 +177,52 @@ public class Empresa {
     }
 
     //Main function that introduce all the parameters of a stock
-    public void introducirParametros(){
+    public void introduceParameters(){
         Scanner entrada = new Scanner(System.in);
         System.out.println("Digite las caracteristicas de la empresa:");
         System.out.println("Introduzca el nombre de la empresa: ");
         this.nombre = entrada.nextLine();
         System.out.println("Elige la opción del sector al que pertenece: ");
-        int indice=elegir(sectores);
+        int indice= choose(sectores);
         this.sector=sectores[indice];
         System.out.println("Elige la opción del subsector al que pertenece: ");
-        this.subsector=elegirSubSector(indice);
+        this.subsector= chooseSubSector(indice);
         System.out.println("Introduzca el ticker de la empresa: ");
         this.ticker=entrada.nextLine();
-        this.cotizacion=Finance.encontrarPrecioApi(ticker);
-        this.acciones=numeroAcciones();
-        float dividendo=valorDividendo();
-        dividendo=calculo_dividendo(tipoDividendo(), dividendo);
-        float payout_total=calculo_payout(acciones, dividendo);
-        this.fcf = valorFCF();
+        this.cotizacion=Finance.findStockValues(ticker);
+        this.acciones= numberStocks();
+        float dividendo= dividendValue();
+        dividendo= calculateDividend(typeDividendMenu(), dividendo);
+        float payout_total= payout(acciones, dividendo);
+        this.fcf = valueFCF();
         this.payout_fcf=Payout_FCF(payout_total, fcf);
         entrada.nextLine();
-        float deuda_largo=valorDeudaLargoPlazo();
-        float deuda_corto=valorDeudaCortoPlazo();
-        this.cash=valorCash();
-        float capital=calculo_capitalizacion(cotizacion, acciones);
-        this.deuda=deuda_neta(deuda_largo, deuda_corto);
+        float deuda_largo= valueLongTermDebt();
+        float deuda_corto= valueShortTermDebt();
+        this.cash= valueCash();
+        float capital= capitalization(cotizacion, acciones);
+        this.deuda= netDebt(deuda_largo, deuda_corto);
         float enterprise=enterprise_value(capital, cash, deuda);
         this.ev_fcf=EV_FCF(enterprise, fcf);
-        float ebit=valorEBIT();
-        float depreciacion=valorDepreciacion();
-        float amortizacion=valorAmortizacion();
+        float ebit= valueEBIT();
+        float depreciacion= valueDepreciation();
+        float amortizacion= valueAmortization();
         this.ebitda=EBITDA(ebit, depreciacion, amortizacion);
         this.ev_ebitda=EV_EBITDA(enterprise, ebitda);
     }
 
     //Function necessary if you are doing an advanced analysis
-    public void introducirParametrosAvanzados(){
-        this.ben_neto=valorEBIT();
+    public void introduceParametersAdvanced(){
+        this.ben_neto= valueEBIT();
         this.per=PER(cotizacion, acciones, ben_neto);
-        this.equity=valorPatrimonio();
+        this.equity= valueEquity();
         this.p_b=P_B(cotizacion, acciones, equity);
-        this.net_revenues=valorVentas();
+        this.net_revenues= valueRevenues();
         this.p_s=P_S(cotizacion, acciones, net_revenues);
     }
 
     //This functions are necessaries for the 'Sector' && 'Subsector'
-    private int elegir(String[] elementos){
+    private int choose(String[] elementos){
         boolean comprobar=false;
         Scanner entrada = new Scanner(System.in);
         int num=0;
@@ -240,21 +240,21 @@ public class Empresa {
         return num-1;
     }
 
-    private String elegirSubSector(int indice){
+    private String chooseSubSector(int indice){
         if(indice==0){
-            return subsectores1[elegir(subsectores1)];
+            return subsectores1[choose(subsectores1)];
         }
         else if(indice==1){
-            return subsectores2[elegir(subsectores2)];
+            return subsectores2[choose(subsectores2)];
         }
         else if(indice==2){
-            return subsectores3[elegir(subsectores3)];
+            return subsectores3[choose(subsectores3)];
         }
         return "";
     }
 
     //It calculates the amount of dividend per year based on the dividend period
-    private static float calculo_dividendo(int opcion, float dividendo){
+    private static float calculateDividend(int opcion, float dividendo){
         if(opcion==1){
             dividendo*=4;
         }
@@ -265,7 +265,7 @@ public class Empresa {
     }
 
     //Auxiliary menu for the dividend
-    private static void mensajeDividendo(){
+    private static void messageDividendMenu(){
         System.out.println("¿Es el dividendo trimestral, semestral o anual?");
         System.out.println("Indique el tipo de dividendo que es:");
         System.out.println("1.Dividendo trimestral");
@@ -273,9 +273,9 @@ public class Empresa {
         System.out.println("3.Dividendo anual");
     }
 
-    //Auxiliary function for 'calculo_dividendo'
-    private static int tipoDividendo(){
-        mensajeDividendo();
+    //Auxiliary function for 'calculateDividend'
+    private static int typeDividendMenu(){
+        messageDividendMenu();
         Scanner entrada = new Scanner(System.in);
         int opcion = entrada.nextInt();
         entrada.nextLine();
@@ -283,7 +283,7 @@ public class Empresa {
     }
 
     //It calculates the PayOut of a stock
-    private static float calculo_payout(float num_acciones, float dividendo){
+    private static float payout(float num_acciones, float dividendo){
         return num_acciones*dividendo;
     }
 
@@ -293,14 +293,14 @@ public class Empresa {
     }
 
     //It calculates the capitalization of a stock
-    private static float calculo_capitalizacion(BigDecimal cotizacion, float acciones){
+    private static float capitalization(BigDecimal cotizacion, float acciones){
         //BigDecimal cotizacion = new BigDecimal(2.36359);
         float rounded = cotizacion.setScale(2, RoundingMode.DOWN).floatValue();
         return rounded*acciones;
     }
 
     //It calculates the net debt of a stock
-    private static float deuda_neta(float deudalargo, float deudacorto){
+    private static float netDebt(float deudalargo, float deudacorto){
         return deudacorto + deudalargo;
     }
 
@@ -343,17 +343,17 @@ public class Empresa {
     }
 
     //It calculates the punctuation of a basic analysis
-    public void aniadirPuntuacion(){
-        this.calificacion= (float) (sumaEV_FCF(this.ev_fcf)*1.66+sumaEV_EBITDA(this.ev_ebitda)*1.66);
+    public void addPunctuation(){
+        this.calificacion= (float) (addingEV_FCF(this.ev_fcf)*1.66+ addingEV_EBITDA(this.ev_ebitda)*1.66);
     }
 
     //It calculates the punctuation of an advanced analysis
-    public void aniadirPuntuacionAvanzada(){
-        this.calificacion= (float) (sumaEV_FCF(this.ev_fcf)+sumaEV_EBITDA(this.ev_ebitda)+sumaPER(this.per)+sumaPB(this.p_b)+sumaPS(this.p_s));
+    public void addPunctuationAdvanced(){
+        this.calificacion= (float) (addingEV_FCF(this.ev_fcf)+ addingEV_EBITDA(this.ev_ebitda)+ addingPER(this.per)+ addingPB(this.p_b)+ addingPS(this.p_s));
     }
 
     //Auxiliary method for the punctuation
-    public static float sumaEV_FCF(float ev_fcf){
+    public static float addingEV_FCF(float ev_fcf){
         float nota=0;
         int i=5;
         int barometro=24;
@@ -366,7 +366,7 @@ public class Empresa {
     }
 
     //Auxiliary method for the punctuation
-    public static float sumaEV_EBITDA(float ev_ebitda){
+    public static float addingEV_EBITDA(float ev_ebitda){
         float nota=0;
         int i=5;
         int barometro=18;
@@ -379,7 +379,7 @@ public class Empresa {
     }
 
     //Auxiliary method for the punctuation
-    public static float sumaPER(float per){
+    public static float addingPER(float per){
         float nota=0;
         int i=3;
         int barometro=20;
@@ -392,7 +392,7 @@ public class Empresa {
     }
 
     //Auxiliary method for the punctuation
-    public static float sumaPB(float p_b){
+    public static float addingPB(float p_b){
         float nota=0;
         int i=5;
         float barometro= (float) 5.9;
@@ -405,7 +405,7 @@ public class Empresa {
     }
 
     //Auxiliary method for the punctuation
-    public static float sumaPS(float p_s){
+    public static float addingPS(float p_s){
         float nota=0;
         int i=3;
         float barometro= (float) 3.7;
@@ -418,16 +418,16 @@ public class Empresa {
     }
 
     //It updates all the data based in the Stock Price
-    public void actualizarDatos(){
-        this.cotizacion=Finance.encontrarPrecioApi(ticker);
-        float capital=calculo_capitalizacion(cotizacion, acciones);
+    public void updateData(){
+        this.cotizacion=Finance.findStockValues(ticker);
+        float capital= capitalization(cotizacion, acciones);
         float enterprise=enterprise_value(capital, cash, deuda);
         this.ev_fcf=EV_FCF(enterprise, fcf);
         this.ev_ebitda=EV_EBITDA(enterprise, ebitda);
         if(this.per==0){
-            this.aniadirPuntuacion();
+            this.addPunctuation();
         }else{
-            this.aniadirPuntuacionAvanzada();
+            this.addPunctuationAdvanced();
             this.per=PER(cotizacion, acciones, ben_neto);
             this.p_b=P_B(cotizacion, acciones, equity);
             this.p_s=P_S(cotizacion, acciones, net_revenues);
@@ -436,7 +436,7 @@ public class Empresa {
     }
 
     //It checks that a float value is correct
-    public boolean comprobarValorPositivo(float valor){
+    public boolean checkPositiveValues(float valor){
         //We assume that the value is positive at the beginning
         boolean positive=true;
         if(valor<0){
@@ -446,155 +446,155 @@ public class Empresa {
     }
 
     //It asks the user for the number of shareholders of a company
-    public float numeroAcciones(){
+    public float numberStocks(){
         Scanner entrada = new Scanner(System.in);
         System.out.println("Introduzca el numero de acciones diluidas de la empresa: ");
         float acciones=0;
         acciones=entrada.nextFloat();
         entrada.nextLine();
-        if(!comprobarValorPositivo(acciones)){
+        if(!checkPositiveValues(acciones)){
             System.out.println("Error, el número de acciones debe de ser positivo");
-            acciones=numeroAcciones();
+            acciones= numberStocks();
         }
         return acciones;
     }
 
     //It asks the user for the amount of the dividend each time that the company pays it
-    public float valorDividendo(){
+    public float dividendValue(){
         Scanner entrada = new Scanner(System.in);
         System.out.println("Indique de cuanto es el dividendo cada vez que te pagan: ");
         float dividendo=0;
         dividendo=entrada.nextFloat();
         entrada.nextLine();
-        if(!comprobarValorPositivo(dividendo)){
+        if(!checkPositiveValues(dividendo)){
             System.out.println("Error, el dividendo debe de ser positivo");
-            dividendo=valorDividendo();
+            dividendo= dividendValue();
         }
         return dividendo;
     }
 
     //It asks the user for the free cash flow of the company
-    public float valorFCF(){
+    public float valueFCF(){
         Scanner entrada = new Scanner(System.in);
         System.out.println("Introduzca el FCF de la empresa en el año fiscal actual: ");
         float FCF=0;
         FCF=entrada.nextFloat();
         entrada.nextLine();
-        if(!comprobarValorPositivo(FCF)){
+        if(!checkPositiveValues(FCF)){
             System.out.println("Error, el flujo de caja libre debe de ser positivo");
-            FCF=valorDividendo();
+            FCF= dividendValue();
         }
         return FCF;
     }
 
     //It asks the user for the long term debt of the company
-    public float valorDeudaLargoPlazo(){
+    public float valueLongTermDebt(){
         Scanner entrada = new Scanner(System.in);
         System.out.println("Introduzca la deuda a largo plazo: ");
         float valor=0;
         valor=entrada.nextFloat();
         entrada.nextLine();
-        if(!comprobarValorPositivo(valor)){
+        if(!checkPositiveValues(valor)){
             System.out.println("Error, la deuda a largo plazo debe de ser positiva");
-            valor=valorDividendo();
+            valor= dividendValue();
         }
         return valor;
     }
 
     //It asks the user for the short term debt of the company
-    public float valorDeudaCortoPlazo(){
+    public float valueShortTermDebt(){
         Scanner entrada = new Scanner(System.in);
         System.out.println("Introduzca la deuda a corto plazo: ");
         float valor=0;
         valor=entrada.nextFloat();
         entrada.nextLine();
-        if(!comprobarValorPositivo(valor)){
+        if(!checkPositiveValues(valor)){
             System.out.println("Error, la deuda a corto plazo debe de ser positiva");
-            valor=valorDividendo();
+            valor= dividendValue();
         }
         return valor;
     }
 
     //It asks the user for the available cash of the company
-    public float valorCash(){
+    public float valueCash(){
         Scanner entrada = new Scanner(System.in);
         System.out.println("Introduzca el dinero en efectivo (Cash & cash equivalents): ");
         float valor=0;
         valor=entrada.nextFloat();
         entrada.nextLine();
-        if(!comprobarValorPositivo(valor)){
+        if(!checkPositiveValues(valor)){
             System.out.println("Error, el dinero en efectivo debe de ser positivo");
-            valor=valorDividendo();
+            valor= dividendValue();
         }
         return valor;
     }
 
     //It asks the user for the net income of the company
-    public float valorEBIT(){
+    public float valueEBIT(){
         Scanner entrada = new Scanner(System.in);
         System.out.println("Introduzca el beneficio neto: ");
         float valor=0;
         valor=entrada.nextFloat();
         entrada.nextLine();
-        if(!comprobarValorPositivo(valor)){
+        if(!checkPositiveValues(valor)){
             System.out.println("Error, el beneficio neto debe de ser positivo");
-            valor=valorDividendo();
+            valor= dividendValue();
         }
         return valor;
     }
 
     //It asks the user for the depreciation of the company
-    public float valorDepreciacion(){
+    public float valueDepreciation(){
         Scanner entrada = new Scanner(System.in);
         System.out.println("Introduzca la depreciación: ");
         float valor=0;
         valor=entrada.nextFloat();
         entrada.nextLine();
-        if(!comprobarValorPositivo(valor)){
+        if(!checkPositiveValues(valor)){
             System.out.println("Error, la depreciación debe de ser positiva");
-            valor=valorDividendo();
+            valor= dividendValue();
         }
         return valor;
     }
 
     //It asks the user for the amortization of the company
-    public float valorAmortizacion(){
+    public float valueAmortization(){
         Scanner entrada = new Scanner(System.in);
         System.out.println("Introduzca la amortización: ");
         float valor=0;
         valor=entrada.nextFloat();
         entrada.nextLine();
-        if(!comprobarValorPositivo(valor)){
+        if(!checkPositiveValues(valor)){
             System.out.println("Error, la amortización debe de ser positiva");
-            valor=valorDividendo();
+            valor= dividendValue();
         }
         return valor;
     }
 
     //It asks the user for the net revenues of the company
-    public float valorVentas(){
+    public float valueRevenues(){
         Scanner entrada = new Scanner(System.in);
         System.out.println("Introduzca las ventas (net revenues): ");
         float valor=0;
         valor=entrada.nextFloat();
         entrada.nextLine();
-        if(!comprobarValorPositivo(valor)){
+        if(!checkPositiveValues(valor)){
             System.out.println("Error, las ventas deben de ser positivas");
-            valor=valorDividendo();
+            valor= dividendValue();
         }
         return valor;
     }
 
     //It asks the user for the equity of the company
-    public float valorPatrimonio(){
+    public float valueEquity(){
         Scanner entrada = new Scanner(System.in);
         System.out.println("Introduzca el patrimonio (equity): ");
         float valor=0;
         valor=entrada.nextFloat();
         entrada.nextLine();
-        if(!comprobarValorPositivo(valor)){
+        if(!checkPositiveValues(valor)){
             System.out.println("Error, el patrimonio debe de ser positivo");
-            valor=valorDividendo();
+            valor= dividendValue();
         }
         return valor;
     }

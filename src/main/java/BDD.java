@@ -7,10 +7,10 @@ public class BDD {
     //Function that provides the connection with our Database in MySQL
     //Sometimes, there is an error related with the 'Time Zone'
     //Just execute this query in mysql: SET GLOBAL time_zone = '+1:00'; (for Spain)
-    public static void inicializarConexion(){
+    public static void initializeConnection(){
         String dbUrl = "jdbc:mysql://localhost:3306/stock?useSSL=false";
-        String user = "connectionDBA";
-        String pass = "Prueba456Prueba123";
+        String user = "root";
+        String pass = "root";
         try{
             //Comunicación con la base de datos
             myConn=DriverManager.getConnection( dbUrl, user, pass);
@@ -62,10 +62,10 @@ from empresas;
      */
 
     //This function add a stock into the BDD
-    public static void aniadirNuevaEmpresa(Empresa e){
+    public static void addNewStock(Stocks e){
         try {
             Statement myStmt = myConn.createStatement();
-            if (comprobarEmpresa(e)) {
+            if (checkStock(e)) {
                 System.out.println("Esta empresa ya se ha añadido a la base de datos\n");
             } else {
                 int rowsAffected = myStmt.executeUpdate("insert into empresas " +
@@ -94,9 +94,9 @@ from empresas;
         }
     }
 
-    //Auxiliary function for the function 'aniadirNuevaEmpresa' that checks if a stock already exists in the BDD
-    public static boolean comprobarEmpresa(Empresa e){
-        boolean encontrado=false;
+    //Auxiliary function for the function 'addNewStockaddNewStock' that checks if a stock already exists in the BDD
+    public static boolean checkStock(Stocks e){
+        boolean check=false;
         try {
             //PreparedStatement myStmt = myConn.prepareStatement("SELECT * FROM empresas WHERE `Ticker`=?");
             //myStmt.setString(1, e.getTicker());
@@ -104,20 +104,20 @@ from empresas;
             ResultSet myRs = null;
             myRs = myStmt.executeQuery("SELECT * FROM empresas WHERE `Ticker`='"+e.getTicker()+"'");
             if(!myRs.next()){ //The stock doesn't exist in the BDD
-                encontrado=false;
+                check=false;
             }else{
-                encontrado=true;
+                check=true;
             }
         }
         catch (Exception exc){
             exc.printStackTrace();
         }
-        return encontrado;
+        return check;
     }
 
     //A function that deletes a stock from the BDD
     //You need to give it the ticker in order to find it in the BDD
-    public static void eliminarEmpresa(String ticker){
+    public static void deleteStock(String ticker){
         try{
             Statement myStmt = myConn.createStatement();
             int rowsAffected=myStmt.executeUpdate("DELETE FROM empresas WHERE Ticker='"+ticker+"'");
@@ -128,7 +128,7 @@ from empresas;
     }
 
     //It shows the BDD in the console of IntelliJ
-    public static void mostrarBDD(){
+    public static void showBDD(){
         try{
             Statement myStmt = myConn.createStatement();
             ResultSet rowsAffected=myStmt.executeQuery("SELECT * FROM empresas");
@@ -154,7 +154,7 @@ from empresas;
     }
 
     //It returns the number of stocks that we've got in our BDD
-    public static int listaEmpresas(){
+    public static int listStocks(){
         int num=0;
         try{
             Statement myStmt = myConn.createStatement();
@@ -171,7 +171,7 @@ from empresas;
 
     //It updates the data of our 'Set' in Java
     //The update is made with the BDD data
-    public static void actualizarDatosSet(HashSet<Empresa> lista){
+    public static void updateDataSet(HashSet<Stocks> lista){
         try{
             Statement myStmt = myConn.createStatement();
             lista.clear();
@@ -197,7 +197,7 @@ from empresas;
                 float equity=rowsAffected.getFloat("Equity");
                 float net_revenues=rowsAffected.getFloat("Net_Revenues");
 
-                Empresa e = new Empresa(ticker, nombre, sector, subsector, payout_fcf, ev_fcf, ev_ebitda, p_b, p_s, per, puntuacion, acciones, cash, deuda, fcf, ebitda, ben_neto, equity, net_revenues);
+                Stocks e = new Stocks(ticker, nombre, sector, subsector, payout_fcf, ev_fcf, ev_ebitda, p_b, p_s, per, puntuacion, acciones, cash, deuda, fcf, ebitda, ben_neto, equity, net_revenues);
                 lista.add(e);
             }
         }
@@ -207,7 +207,7 @@ from empresas;
     }
 
     //It updates a stock based in the price(that is always changing)
-    public static void actualizarEmpresa(Empresa e) {
+    public static void updateStocks(Stocks e) {
         try {
             Statement myStmt = myConn.createStatement();
             String sql = "UPDATE empresas SET `EV/FCF` = '" + e.getEv_fcf() + "' WHERE `Ticker`='" + e.getTicker() + "'";
